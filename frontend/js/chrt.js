@@ -2,7 +2,7 @@
 async function load() {
   const token = localStorage.getItem('token');
   if (!token) { alert('Login first'); location='login.html'; return; }
-  const res = await fetch('/api/cart', { headers: { Authorization: 'Bearer ' + token } });
+  const res = await fetch('/cart', { headers: { Authorization: 'Bearer ' + token } });
   const cart = await res.json();
   const root = document.getElementById('list');
   if (!cart.length) root.innerText = 'Cart empty';
@@ -16,14 +16,14 @@ async function load() {
 }
 async function remove(pid) {
   const token = localStorage.getItem('token');
-  await fetch('/api/cart/remove', { method:'DELETE', headers:{ 'Content-Type':'application/json', Authorization:'Bearer ' + token }, body: JSON.stringify({ productId: pid })});
+  await fetch('/cart/remove', { method:'DELETE', headers:{ 'Content-Type':'application/json', Authorization:'Bearer ' + token }, body: JSON.stringify({ productId: pid })});
   load();
 }
 document.getElementById('checkout').onsubmit = async (e) => {
   e.preventDefault();
   const token = localStorage.getItem('token');
   const address = new FormData(e.target).get('address');
-  const res = await fetch('/api/orders/create', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer ' + token }, body: JSON.stringify({ address })});
+  const res = await fetch('/orders/create', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer ' + token }, body: JSON.stringify({ address })});
   const json = await res.json();
   if (json._id) { alert('Order placed'); location='index.html'; }
   else alert('Order error');

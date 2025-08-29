@@ -2,14 +2,13 @@ const productsList = document.getElementById("products");
 const categoryFilter = document.getElementById("categoryFilter");
 const brandFilter = document.getElementById("brandFilter");
 const applyFilterBtn = document.getElementById("applyFilter");
-const API_BASE_URL = "https://ecommerce-gi9o.vercel.app"; 
 
 // unified loader + filter
 async function loadProducts(filters = {}) {
   try {
     // build query params if filters exist
     const params = new URLSearchParams(filters).toString();
-    const res = await fetch(`/api/products?${params}`);
+    const res = await fetch(`https://ecomrend.onrender.com/products?${params}`);
     const data = await res.json();
 
   console.log("Data=",data);
@@ -32,7 +31,7 @@ async function loadProducts(filters = {}) {
       productsList.appendChild(li);
     });
   } catch (err) {
-    console.error("Error fetching products:", err);
+    console.log("Error fetching products:", err);
   }
 }
 
@@ -72,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
   logoutBtn.addEventListener("click", async () => {
     try {
       // optional backend logout if you track sessions
-      await fetch("/api/auth/logout", { method: "POST" });
+      await fetch("/auth/logout", { method: "POST" });
 
       // remove JWT
       localStorage.removeItem("token");

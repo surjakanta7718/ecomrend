@@ -5,7 +5,7 @@
 
     // ---------------- LOAD PRODUCT ----------------
     async function loadProduct() {
-      const res = await fetch(`/api/products/${productId}`);
+      const res = await fetch(`/products/${productId}`);
       const product = await res.json();
 
       document.getElementById("title").innerText = product.title;
@@ -44,7 +44,7 @@
         location.href = "login.html";
         return;
       }
-      const res = await fetch("/api/cart/add", {
+      const res = await fetch("/cart/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +63,7 @@
       const rating = fd.get("rating");
       const comment = fd.get("comment");
 
-      const res = await fetch(`/api/products/${productId}/reviews`, {
+      const res = await fetch(`/products/${productId}/reviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +84,7 @@
     // ---------------- DELETE REVIEW ----------------
     async function deleteReview(reviewId) {
       if (!confirm("Delete this review?")) return;
-      const res = await fetch(`/api/products/${productId}/reviews/${reviewId}`, {
+      const res = await fetch(`/products/${productId}/reviews/${reviewId}`, {
         method: "DELETE",
         headers: { "Authorization": "Bearer " + token }
       });

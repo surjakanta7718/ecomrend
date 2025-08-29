@@ -2,7 +2,7 @@
 document.getElementById('f').onsubmit = async (e) => {
   e.preventDefault();
   const fd = new FormData(e.target);
-  const res = await fetch('auth/login', {
+  const res = await fetch('https://ecomrend.onrender.com/auth/login', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ email: fd.get('email'), password: fd.get('password') })
