@@ -34,10 +34,7 @@ async function connectDB() {
     const mongoUri = process.env.MONGO_URI;
     if (!mongoUri) throw new Error("MONGO_URI not defined");
 
-    cached.promise = mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    }).then(mongoose => mongoose);
+    cached.promise = mongoose.connect(mongoUri).then(mongoose => mongoose);
   }
 
   cached.conn = await cached.promise;
