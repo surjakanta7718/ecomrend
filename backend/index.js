@@ -1,12 +1,16 @@
-// backend/index.js
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const connectDB = require("./db");
-const serverless = require("serverless-http");
-
+// server.js
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const path = require('path');
+const connectDB = require('./db');
 dotenv.config();
 const app = express();
+app.use(cors());
+app.use(express.json());
+
+
 
 // const allowedOrigins = [
 //   "https://ecommerce-hazel-tau-48.vercel.app",
@@ -29,21 +33,23 @@ const app = express();
 // });
 
 // Routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/products", require("./routes/products"));
-app.use("/api/cart", require("./routes/cart"));
-app.use("/api/wishlist", require("./routes/wishlist"));
-app.use("/api/orders", require("./routes/orders"));
-app.use("/api/contact", require("./routes/contact"));
-app.use("/api/products/:productId/reviews", require("./routes/review"));
+app.use("/auth", require("./routes/auth"));
+app.use("/products", require("./routes/products"));
+app.use("/cart", require("./routes/cart"));
+app.use("/wishlist", require("./routes/wishlist"));
+app.use("/orders", require("./routes/orders"));
+app.use("/contact", require("./routes/contact"));
+app.use("/products/:productId/reviews", require("./routes/review"));
 
-connectDB();
 
-// Local dev only
-if (require.main === module) {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-}
+
+// serve frontend files from ../frontend
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
+
+const PORT = process.env.PORT || 5000;
+connectDB()
+  .then(()=> app.listen(PORT, ()=> console.log(`Server running on ${PORT}`)))
+  .catch(err => console.error('DB connect error', err));
 
 // 👉 Export app (important for Vercel)
 //module.exports = app;

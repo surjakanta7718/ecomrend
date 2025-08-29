@@ -5,7 +5,7 @@
 
     // ---------------- LOAD PRODUCT ----------------
     async function loadProduct() {
-      const res = await fetch(`https://skd-five.vercel.app/api/products/${productId}`);
+      const res = await fetch(`/api/products/${productId}`);
       const product = await res.json();
 
       document.getElementById("title").innerText = product.title;

@@ -9,7 +9,7 @@ async function loadProducts(filters = {}) {
   try {
     // build query params if filters exist
     const params = new URLSearchParams(filters).toString();
-    const res = await fetch(`${API_BASE_URL}/api/products?${params}`);
+    const res = await fetch(`/api/products?${params}`);
     const data = await res.json();
 
   console.log("Data=",data);
