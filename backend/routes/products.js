@@ -2,21 +2,17 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 const Review = require("../models/Review");
-// get all
-// router.get('/', async (req, res) => {
-//   const products = await Product.find().lean();
-//   res.json(products);
-// });
-// GET /api/products?category=Electronics&brand=Apple&minPrice=1000&maxPrice=5000
+
+// GET /products?category=&brand=&color=&size=&minPrice=&maxPrice=
 router.get("/", async (req, res) => {
   try {
     const { category, brand, color, size, minPrice, maxPrice } = req.query;
-    let filter = {};
+    const filter = {};
 
-    if (category) filter.category = category;
-    if (brand) filter.brand = brand;
-    if (color) filter.color = color;
-    if (size) filter.size = size;
+    if (category) filter.category = category.trim();
+    if (brand) filter.brand = brand.trim();
+    if (color) filter.color = color.trim();
+    if (size) filter.size = size.trim();
 
     if (minPrice || maxPrice) {
       filter.price = {};
@@ -24,44 +20,38 @@ router.get("/", async (req, res) => {
       if (maxPrice) filter.price.$lte = Number(maxPrice);
     }
 
-    const products = await Product.find(filter);
+    const products = await Product.find(filter).lean();
     res.json(products);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Error fetching products" });
   }
 });
-// single product + summary rating
-// routes/products.js
 
-
+// GET /products/:id - single product with reviews & average rating
 router.get("/:id", async (req, res) => {
   try {
-    const p = await Product.findById(req.params.id).lean();
-    if (!p) return res.status(404).json({ message: "Not found" });
+    const product = await Product.findById(req.params.id).lean();
+    if (!product) return res.status(404).json({ message: "Not found" });
 
-    // fetch all reviews for this product
-    const reviews = await Review.find({ product: p._id })
-      .populate("user", "email") // include user email
-      .sort({ createdAt: -1 })   // latest first
+    const reviews = await Review.find({ product: product._id })
+      .populate("user", "email")
+      .sort({ createdAt: -1 })
       .lean();
 
-    // compute average rating
-    const avg =
+    const avgRating =
       reviews.length > 0
-        ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
         : 0;
 
     res.json({
-      ...p,
-      avgRating: Number(avg.toFixed(2)),
+      ...product,
+      avgRating: Number(avgRating.toFixed(2)),
       reviewCount: reviews.length,
-      reviews, // send full review list
+      reviews,
     });
   } catch (err) {
     res.status(500).json({ message: "Error fetching product" });
   }
 });
-
-module.exports = router;
 
 module.exports = router;
