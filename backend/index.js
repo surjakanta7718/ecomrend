@@ -22,14 +22,14 @@ app.use("/orders", require("./routes/orders"));
 app.use("/contact", require("./routes/contact"));
 app.use("/products/:productId/reviews", require("./routes/review"));
 
-// // ----------------- SERVE FRONTEND -----------------
-// const frontendPath = path.join(__dirname, '..', 'frontend');
-// app.use(express.static(frontendPath));
+// ----------------- SERVE FRONTEND -----------------
+const frontendPath = path.join(__dirname, '..', 'frontend');
+app.use(express.static(frontendPath));
 
-// // Catch-all route for frontend (SPA support)
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(frontendPath, 'index.html'));
-// });
+// Catch-all route for frontend (SPA support)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
+});
 
 // ----------------- START SERVER -----------------
 const PORT = process.env.PORT || 5000;
